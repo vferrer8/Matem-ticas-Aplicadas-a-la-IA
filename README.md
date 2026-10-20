@@ -1,163 +1,61 @@
-# 📐 Matemáticas Aplicadas a la IA: Fundamentos Matemáticos y Aplicaciones
+# Mathematics Applied to AI: Regression Models for Energy Demand
 
-Proyecto integral que explora y aplica conceptos matemáticos fundamentales en inteligencia artificial. Cubre desde álgebra lineal y cálculo hasta estadística y teoría de probabilidad, con implementaciones prácticas demostrando cómo la matemática sustenta cada algoritmo de IA.
+Comparison of linear, polynomial and regularised regression models to predict energy demand from economic and climate variables. The model choice is backed by information criteria (AIC / BIC) and cross-validation.
 
-## 🎯 Objetivos
+Coursework for the "Mathematics Applied to AI" module of the MSc in Artificial Intelligence (UTAMED). The accompanying PDF contains the theoretical development and the discussion of results.
 
-- **Dominar conceptos matemáticos clave** en inteligencia artificial
-- **Implementar algoritmos** basados en principios matemáticos sólidos
-- **Comprender la derivación formal** de técnicas de IA comunes
-- **Aplicar métodos numéricos** a problemas reales de optimización
-- **Demostrar relaciones** entre matemática teórica y algoritmos prácticos
-- **Desarrollar intuición matemática** para decisiones de modelado
+## The dataset
 
-## 🧠 Conceptos Clave
+`datos.csv`: 200 observations, all numeric.
 
-### Álgebra Lineal
-- Matrices y vectores, operaciones fundamentales
-- Espacios vectoriales y transformaciones lineales
-- Valores y vectores propios (eigenvalues/eigenvectors)
-- Descomposición matricial (SVD, QR, Cholesky)
-- Ortogonalidad y proyecciones
+| Variable | Role |
+|---|---|
+| `temperatura_media` (mean temperature) | Predictor |
+| `gasto_consumidor` (consumer spending) | Predictor |
+| `inflacion` (inflation) | Predictor |
+| `desempleo` (unemployment) | Predictor |
+| `consumo_historico` (historical consumption) | Predictor |
+| `demanda_energia` (energy demand) | **Target** |
 
-### Cálculo
-- Derivadas parciales y gradientes
-- Funciones multivariables
-- Regla de la cadena y propagación hacia atrás (backpropagation)
-- Series de Taylor y aproximaciones
-- Análisis de convergencia
+## What the notebook does
 
-### Estadística y Probabilidad
-- Distribuciones de probabilidad
-- Estimación de máxima verosimilitud (MLE)
-- Inferencia bayesiana
-- Varianza, covarianza y correlación
-- Teorema del límite central
+**1. Exploration.** Pair plot, correlation heatmap and box plots. The extreme values are kept: they reflect seasonal peaks, such as air conditioning in summer, rather than errors.
 
-### Optimización
-- Descenso de gradiente y variantes
-- Programación convexa
-- Multiplicadores de Lagrange
-- Algoritmos de primera y segunda orden
-- Análisis de convergencia
+**2. Full linear model.** The five predictors are standardised and their coefficients inspected. Temperature (negative) and historical consumption (positive) dominate. The final models keep three predictors: temperature, unemployment and historical consumption.
 
-### Análisis Complejo y Numérico
-- Números complejos en procesamiento de señales
-- Métodos iterativos
-- Estabilidad numérica
-- Análisis de error
+**3. Model comparison on a held-out split (85 / 15).**
 
-## ⚙️ Desarrollo
+| Model | R² | RMSE | AIC | BIC |
+|---|---|---|---|---|
+| Linear regression | 0.919 | 217.4 | **1542.9** | **1555.5** |
+| Polynomial regression (degree 2) | 0.923 | 211.3 | 1545.2 | 1576.5 |
 
-### Metodología
-Se estructura el proyecto en aplicaciones temáticas de conceptos matemáticos:
+The polynomial model gains very little fit for three times as many parameters. Both AIC and BIC prefer the linear model.
 
-1. **Fundamentos de Álgebra Lineal**
-   - Implementación de operaciones matriciales
-   - Resolución de sistemas lineales
-   - Análisis de autovalores en aplicaciones de IA
-   - Proyecciones y reducción de dimensionalidad
+**4. Regularisation and 5-fold cross-validation** (Ridge with α chosen by `RidgeCV`):
 
-2. **Cálculo y Optimización**
-   - Derivación numérica
-   - Algoritmos de descenso de gradiente
-   - Optimización multivariable
-   - Aplicación a ajuste de parámetros en modelos
+| Model | CV R² | CV RMSE |
+|---|---|---|
+| Linear regression | 0.818 | 271.8 |
+| Polynomial (degree 2) | 0.808 | 278.5 |
+| Ridge | **0.818** | **271.8** |
+| Polynomial + Ridge | 0.810 | 277.7 |
 
-3. **Probabilidad e Inferencia**
-   - Generación de muestras de distribuciones
-   - Estimación de parámetros (MLE, Bayesiano)
-   - Análisis de incertidumbre
-   - Inferencia probabilística
+**Conclusion.** The relationship is essentially linear. Polynomial terms add complexity without improving out-of-sample error, and Ridge matches plain OLS because the three predictors are not strongly collinear. The simplest model is the right choice.
 
-4. **Aplicaciones Integradas**
-   - Machine Learning desde primeros principios matemáticos
-   - Regresión lineal derivada matemáticamente
-   - Análisis de componentes principales (PCA)
-   - Modelos probabilísticos gráficos
-   - Redes neuronales y propagación del error
-
-5. **Análisis Numérico Avanzado**
-   - Estabilidad de algoritmos
-   - Convergencia de métodos iterativos
-   - Manejo de problemas mal condicionados
-   - Optimización de cálculos computacionales
-
-### Decisiones Importantes
-- **Enfoque desde primeros principios**: Derivar, no solo usar fórmulas
-- **Implementaciones propias**: Crear algoritmos sin librerías, luego comparar con optimizados
-- **Intuición visual**: Gráficas y visualizaciones para entender conceptos
-- **Aplicaciones reales**: Todos los conceptos tienen implementaciones prácticas
-- **Rigor matemático**: Balance entre formalidad y practicidad
-
-## 📊 Resultados
-
-El proyecto genera:
-- **Implementaciones de algoritmos clásicos** desde primeros principios
-- **Análisis matemático detallado** de convergencia y estabilidad
-- **Comparativas entre enfoques** teórico vs numérico
-- **Visualizaciones interactivas** de conceptos abstractos
-- **Benchmarks de rendimiento** computacional
-- **Conexiones claras** entre matemática y aplicaciones de IA
-
-## 🚀 Conclusiones
-
-La matemática es el fundamento insustituible de la inteligencia artificial:
-
-- **Álgebra lineal domina** en procesamiento de datos y redes neuronales
-- **Cálculo es esencial** para optimización y aprendizaje automático
-- **Probabilidad cuantifica incertidumbre** en predicciones
-- **Análisis numérico asegura** eficiencia y estabilidad
-- **Entender matemática permite** innovar más allá de librerías
-
-**Mejoras futuras:**
-- Expandir a teoría de grafos y algoritmos en IA
-- Incluir tópicos avanzados (topología, teoría de medida)
-- Añadir aplicaciones a procesamiento de lenguaje natural
-- Implementar métodos de ecuaciones diferenciales en sistemas dinámicos
-- Crear un curso interactivo basado en este contenido
-
-## 📂 Estructura del Proyecto
+## Repository contents
 
 ```
-Matemáticas aplicadas a la IA/
-├── RAA_Mates_Clean_VF.ipynb               # Implementaciones limpias y documentadas
-├── RAA_Mates_VictorFerrer.pdf             # Documentación teórica y derivaciones
-└── README.md                              # Este archivo
+├── RAA_Mates_Clean_VF.ipynb     # Notebook: EDA, regression models, AIC/BIC, cross-validation
+└── RAA_Mates_VictorFerrer.pdf   # Report: theory and discussion of results
 ```
 
-### Contenido del Notebook
-- **Álgebra Lineal**: Operaciones, descomposiciones, aplicaciones
-- **Cálculo**: Derivadas, gradientes, optimización
-- **Probabilidad**: Distribuciones, muestreo, inferencia
-- **Optimización**: Algoritmos de optimización y análisis de convergencia
-- **Aplicaciones Integradas**: ML, PCA, redes neuronales desde cero
-- **Análisis Numérico**: Estabilidad, precisión, eficiencia
+> The notebook and the report are in Spanish. The source CSV is not included in the repository.
 
-### Contenido del PDF
-- Derivaciones matemáticas formales
-- Teoremas y propiedades clave
-- Pruebas de convergencia
-- Análisis de complejidad
-- Conexiones teóricas
+## Tech stack
 
-## 🛠️ Tecnologías Utilizadas
+Python · pandas · NumPy · scikit-learn (`LinearRegression`, `PolynomialFeatures`, `RidgeCV`, `cross_validate`) · Seaborn · Jupyter
 
-| Tecnología | Uso |
-|-----------|-----|
-| **Python 3.x** | Lenguaje principal |
-| **NumPy** | Operaciones numéricas y álgebra lineal |
-| **SciPy** | Álgebra lineal avanzada y optimización |
-| **Matplotlib** | Visualización de conceptos |
-| **SymPy** | Cálculo simbólico y derivaciones |
-| **Jupyter Notebook** | Desarrollo interactivo y documentación |
-| **Pandas** | Análisis de datos |
+## Author
 
-## ✍️ Autor
-
-**Víctor Ferrer**  
-Master en Inteligencia Artificial - UTAMED
-
----
-
-*Este proyecto forma parte del programa de posgrado en Inteligencia Artificial y demuestra competencias sólidas en fundamentos matemáticos, comprensión profunda de algoritmos y capacidad para implementar métodos numéricos complejos de forma eficiente.*
+**Víctor Ferrer**, MSc in Artificial Intelligence, UTAMED
